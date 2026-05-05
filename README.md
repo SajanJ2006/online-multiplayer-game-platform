@@ -1,258 +1,31 @@
 # Online Multiplayer Game Platform
 
-Group 8 Online Multiplayer Game Platform
+A scalable online multiplayer platform featuring real-time gameplay (Tic-Tac-Toe, Connect Four), matchmaking, persistent leaderboards, and a multi-threaded TCP client-server architecture with SQLite database integration built in Java.
 
-University of Calgary
+## Features
+- Real-time multiplayer gameplay (Tic-Tac-Toe, Connect Four)
+- Multi-threaded TCP client-server architecture with session handling
+- Game-to-server integration supporting concurrent gameplay
+- Persistent leaderboard using SQLite
+- JavaFX-based user interface
 
-SENG 300 Tutorial T08
+## Contributions
+- Developed core game logic for Tic-Tac-Toe and Connect Four
+- Implemented rules and validation systems to ensure correct gameplay
+- Integrated game modules with the server for real-time multiplayer functionality
+- Contributed to UI interaction and game rendering using JavaFX
+- Collaborated within a multi-team architecture to ensure system-wide compatibility
 
-Winter 2026
+## Tech Stack
+- Java (JDK 25)
+- JavaFX
+- Maven
+- SQLite
+- TCP Networking
 
-A turn-based online multiplayer game platform (Tic-Tac-Toe and Connect Four) built with JavaFX and a socket-based server.
+## Running the Project
 
-## Project Status
-
-**Please read the [CURRENT_STATE.md](CURRENT_STATE.md) file**. All team members should reference this document to understand what is done, what is in progress, and what remains.
-
-## Prerequisites
-
-### Client
-
-- **JDK 25**
-- **Git**
-
-### Server
-
-- **JDK 25**
-- **Git**
-- **Admin access may be required for firewall setup**
-
-### Cross-Platform Note
-
-Commands below use `./mvnw` (Linux, macOS, Git Bash on Windows).
-
-On **Windows CMD or PowerShell**, use `mvnw.cmd` instead (e.g., `mvnw.cmd clean compile`).
-
-## Client Build and Run
-
-Compile first to check for errors, then run tests to verify correctness, then launch the application.
-
-### Build Instructions
-
+Client:
 ```bash
 ./mvnw clean compile
-```
-
-### Test Instructions
-
-```bash
-./mvnw clean test
-```
-
-### Run Instructions
-
-```bash
 ./mvnw clean javafx:run
-```
-
-## Server Build and Run
-
-Server commands can be run from either the project root (using `-f server/pom.xml`) or from the `server/` directory.
-
-### Build Instructions
-
-From project root:
-
-```bash
-./mvnw -f server/pom.xml clean compile
-```
-
-Or from the `server/` directory:
-
-```bash
-cd server
-../mvnw clean compile
-```
-
-To package the server JAR:
-
-```bash
-./mvnw -f server/pom.xml clean package
-```
-
-### Test Instructions
-
-```bash
-./mvnw -f server/pom.xml clean test
-```
-
-### Run Instructions
-
-```bash
-./mvnw -f server/pom.xml exec:java
-```
-
-Or from the `server/` directory:
-
-```bash
-cd server
-../mvnw exec:java
-```
-
-**Note:** The server cannot run directly from IntelliJ IDE due to firewall restrictions. Running from terminal/command line with admin privileges is required.
-
-## Firewall Configuration
-
-Before running the server for the first time, allow TCP traffic on port **14001**.
-
-### Windows
-
-1. Open **Windows Defender Firewall** → **Advanced Settings**
-2. Create **Inbound Rule**:
-   - Type: Port
-   - Protocol: TCP, Port: 14001
-   - Action: Allow the connection
-   - Profile: All
-   - Name: "SENG300 Server Port"
-3. Create matching Outbound Rule
-4. Enable both rules when server is running and disable rules when server is not running
-
-### macOS
-
-macOS does not block outbound connections by default. If using the built-in firewall, allow incoming connections for Java in **System Settings > Network > Firewall**.
-
-### Linux
-
-```bash
-sudo ufw allow 14001/tcp
-```
-
-## Server Configuration
-
-The server uses:
-
-- **Port:** 14001 (configured in `server/src/.../Network.java`)
-- **Database:** SQLite (bundled with Maven)
-
-## Network Notes
-
-- The server listens for TCP connections on port `14001`.
-- Clients connect using the server machine's internal IP address and port.
-- Under the current test setup, client and server must be on the same network.
-- If the server IP address changes, the client configuration may need to be updated.
-
-## Project Structure
-
-```
-project-root/
-├── docs/                              # Design documents and diagrams
-│   ├── architecture/                  # System-wide architecture
-│   ├── platform-core/                 # Platform Core designs
-│   │   ├── identity/                  # Authentication and session
-│   │   ├── game-registry/             # Game registry design
-│   │   ├── rooms-and-matchmaking/     # Matchmaking design
-│   │   ├── turn-engine/               # Turn engine design
-│   │   └── persistence/               # Database and server design
-│   ├── client-ui/                     # Client/UI designs
-│   │   ├── screens/                   # Screen-level designs
-│   │   └── game-rendering/            # Game rendering designs
-│   ├── rules-validation/              # Rules & Validation designs
-│   │   ├── leaderboard/               # Leaderboard design
-│   │   └── move-validation/           # Move validation design
-│   ├── quality-testing/               # Test plans
-│   │   └── test-plans/                # Test plan documents
-│   └── integration-release/           # I&R process docs
-│       └── presentations/             # Presentation materials
-├── server/                            # Server module (separate Maven project)
-│   ├── pom.xml
-│   └── src/
-│       ├── main/java/.../
-│       │   ├── Database.java          # SQLite persistence and user management
-│       │   ├── Matchmaker.java        # Skill-based matchmaking queue
-│       │   ├── Network.java           # TCP server socket listener with encryption
-│       │   ├── Request.java           # Async request DTO with CompletableFuture
-│       │   ├── ServerMain.java        # Server entry point
-│       │   ├── Session.java           # Per-client session handler (12 request types)
-│       │   └── Games/                 # Server-side game logic and sessions
-│       │       ├── GameState.java
-│       │       ├── TicTacToeBoard.java
-│       │       ├── TicTacToeGame.java
-│       │       ├── TicTacToeGameSession.java
-│       │       ├── TTTServerSession.java
-│       │       ├── ConnectFourBoard.java
-│       │       ├── ConnectFourGame.java
-│       │       └── ConnectFourGameSession.java
-│       └── test/java/.../             # Server unit tests
-├── src/
-│   ├── main/
-│   │   ├── java/ca/ucalgary/seng300/
-│   │   │   ├── app/                   # Application entry point (MainApp)
-│   │   │   ├── shared/                # Cross-team contracts and models
-│   │   │   │   ├── interfaces/        # Shared interfaces (stub, .gitkeep only)
-│   │   │   │   └── models/            # Game, Tag, Player, Message, ActivePlayer
-│   │   │   ├── core/
-│   │   │   │   ├── identity/          # Client-side auth and networking
-│   │   │   │   │   └── client/        # Network client and session management
-│   │   │   │   ├── registry/          # Game, Chat, and Player registries
-│   │   │   │   ├── matchmaking/       # Matchmaking (stub, .gitkeep only)
-│   │   │   │   ├── persistence/       # Persistence (stub, .gitkeep only)
-│   │   │   │   ├── rooms/             # Room management (stub, .gitkeep only)
-│   │   │   │   └── turnengine/        # Game session management
-│   │   │   ├── rules/
-│   │   │   │   ├── leaderboard/       # Scoring models, queries, and database
-│   │   │   │   └── validation/        # Move validation pipeline (stub)
-│   │   │   ├── client/
-│   │   │   │   ├── screens/           # FXML controllers (9 screens)
-│   │   │   │   ├── components/        # Leaderboard row model and mock data
-│   │   │   │   └── rendering/         # Board rendering (stub)
-│   │   │   └── games/
-│   │   │       ├── GameEngine.java    # Game engine interface (commented out)
-│   │   │       ├── GameController.java # Game controller (commented out)
-│   │   │       ├── GameState.java     # Game state enum
-│   │   │       ├── Move.java          # Move placeholder stub
-│   │   │       ├── GeneralStats.java  # Stats placeholder stub
-│   │   │       ├── tictactoe/         # Tic-Tac-Toe board, game, and game session
-│   │   │       └── connectfour/       # Connect Four board, game, and game session
-│   │   └── resources/
-│   │       ├── css/                   # Stylesheets
-│   │       ├── fxml/                  # Screen layouts (9 FXML files)
-│   │       └── images/               # Static assets
-│   └── test/                          # JUnit 5 test suite
-│       └── java/.../
-│           ├── client/                # UI interface tests
-│           ├── core/                  # Registry, database, network, and session tests
-│           ├── games/                 # Game logic tests (TTT and C4)
-│           ├── rules/                 # Leaderboard and match record tests
-│           └── integration/           # Integration tests (stub)
-├── scripts/                           # Utility scripts
-├── .gitlab-ci.yml                     # CI/CD pipeline (build + test, client and server)
-├── .gitlab/                           # GitLab merge request templates
-├── mvnw / mvnw.cmd                    # Maven wrapper (Unix / Windows)
-├── pom.xml                            # Client Maven build config
-├── CHANGELOG.md                       # Version history
-├── CURRENT_STATE.md                   # Feature status and requirements checklist
-└── team.md                            # Sub-team roster
-```
-
-## Key Documents
-
-- [Current State](CURRENT_STATE.md)
-- [Team Roster](team.md)
-- [Changelog](CHANGELOG.md)
-- [Documentation Directory](docs/README.md)
-
-## Sub-Team Responsibilities
-
-See [team.md](team.md) for the full sub-team roster, leads, and members.
-
-| Sub-Team              | Package                | Responsibilities                                                                        |
-| --------------------- | ---------------------- | --------------------------------------------------------------------------------------- |
-| Platform Core         | `core/`, `server/`     | Server networking, encryption, database, session handling, matchmaking, and game sessions |
-| Client/UI             | `client/`              | Screen design, game board UI, navigation, leaderboard display, and chat interface         |
-| Rules & Validation    | `rules/`, `games/`     | Game logic (Tic-Tac-Toe, Connect Four), move validation, and leaderboard scoring models   |
-| Quality & Testing     | `test/`                | Unit testing, test planning, and test infrastructure                                      |
-| Integration & Release | Root files, `scripts/` | Branching/merging workflow, cross-team integration, documentation, and CI/CD              |
-
----
-
-_Last updated: 2026-04-10_
