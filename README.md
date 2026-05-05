@@ -29,3 +29,13 @@ Client:
 ```bash
 ./mvnw clean compile
 ./mvnw clean javafx:run
+```
+
+Server:
+```bash
+./mvnw -f server/pom.xml exec:java
+```
+
+## Notes
+- The server runs on TCP port 14001
+- Client and server must be on the same network for testing
